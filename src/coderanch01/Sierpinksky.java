@@ -13,6 +13,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -29,23 +31,28 @@ public class Sierpinksky {
     Timer timer;
     
     public static void main(String... args) {
-        int nrOfPoints = 50_000;
-//        new Sierpinksky().draw();
+        new Sierpinksky();
     }
     
     public Sierpinksky() {
         int width = 800, height = 800;
+        int nrOfPoints = 50_000;
+        createPoints(nrOfPoints, width, height);
         panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g.create();
                 g2d.setColor(Color.RED);
-                points.forEach((p -> g2d.drawLine(p.getX(), p.getY(), p.getX(), p.getY())));
+                points.forEach(p -> g2d.drawLine((int)p.getX(), (int)p.getY(), (int)p.getX(), (int)p.getY()));
             }
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(width, height);
+            }
+            @Override
+            public Color getBackground() {
+                return Color.WHITE;
             }
         };
         JFrame frame = new JFrame("Sierpinsky");
@@ -56,5 +63,11 @@ public class Sierpinksky {
         frame.setVisible(true);
     }
     
-    
+    private void createPoints(int nr, int w, int h) {
+        var r = new Random();
+        IntStream.range(0, nr)
+            .mapToObj(i -> new Point2D.Double(r.nextInt(w), r.nextInt(h)))
+            .forEach(points::add)
+        ;
+    }
 }
